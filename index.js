@@ -119,11 +119,11 @@ function getScaleRatio() {
 
 function showGameOver() {
   const fontSize = 70 * scaleRatio;
-  ctx.font = `${fontSize}px Verdana`;
-  ctx.fillStyle = "grey";
+  ctx.font = `${fontSize}px Helvetica`;
+  ctx.fillStyle = "black";
   const x = canvas.width / 4.5;
   const y = canvas.height / 2;
-  ctx.fillText("GAME OVER", x, y);
+  ctx.fillText("LOL", x, y);
 }
 
 function setupGameReset() {
@@ -149,11 +149,11 @@ function reset() {
 
 function showStartGameText() {
   const fontSize = 40 * scaleRatio;
-  ctx.font = `${fontSize}px Verdana`;
-  ctx.fillStyle = "grey";
+  ctx.font = `${fontSize}px Helvetica`;
+  ctx.fillStyle = "black";
   const x = canvas.width / 14;
   const y = canvas.height / 2;
-  ctx.fillText("Tap Screen or Press Space To Start", x, y);
+  ctx.fillText("START?", x, y);
 }
 
 function updateGameSpeed(frameTimeDelta) {
@@ -161,7 +161,7 @@ function updateGameSpeed(frameTimeDelta) {
 }
 
 function clearScreen() {
-  ctx.fillStyle = "white";
+  ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
