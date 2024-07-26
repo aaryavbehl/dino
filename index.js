@@ -109,3 +109,106 @@ function getScaleRatio() {
     window.innerWidth,
     document.documentElement.clientWidth
   );
+  
+  if (screenWidth / screenHeight < GAME_WIDTH / GAME_HEIGHT) {
+    return screenWidth / GAME_WIDTH;
+  } else {
+    return screenHeight / GAME_HEIGHT;
+  }
+}
+
+function showGameOver() {
+  const fontSize = 70 * scaleRatio;
+  ctx.font = `${fontSize}px Verdana`;
+  ctx.fillStyle = "grey";
+  const x = canvas.width / 4.5;
+  const y = canvas.height / 2;
+  ctx.fillText("GAME OVER", x, y);
+}
+
+function setupGameReset() {
+  if (!hasAddedEventListenersForRestart) {
+    hasAddedEventListenersForRestart = true;
+
+    setTimeout(() => {
+      window.addEventListener("keyup", reset, { once: true });
+      window.addEventListener("touchstart", reset, { once: true });
+    }, 1000);
+  }
+}
+
+function reset() {
+  hasAddedEventListenersForRestart = false;
+  gameOver = false;
+  waitingToStart = false;
+  ground.reset();
+  cactiController.reset();
+  score.reset();
+  gameSpeed = GAME_SPEED_START;
+}
+
+function showStartGameText() {
+  const fontSize = 40 * scaleRatio;
+  ctx.font = `${fontSize}px Verdana`;
+  ctx.fillStyle = "grey";
+  const x = canvas.width / 14;
+  const y = canvas.height / 2;
+  ctx.fillText("Tap Screen or Press Space To Start", x, y);
+}
+
+function updateGameSpeed(frameTimeDelta) {
+  gameSpeed += frameTimeDelta * GAME_SPEED_INCREMENT;
+}
+
+function clearScreen() {
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+function gameLoop(currentTime) {
+  if (previousTime === null) {
+    previousTime = currentTime;
+    requestAnimationFrame(gameLoop);
+    return;
+  }
+  const frameTimeDelta = currentTime - previousTime;
+  previousTime = currentTime;
+
+  clearScreen();
+
+  if (!gameOver && !waitingToStart) {
+
+    ground.update(gameSpeed, frameTimeDelta);
+    cactiController.update(gameSpeed, frameTimeDelta);
+    player.update(gameSpeed, frameTimeDelta);
+    score.update(frameTimeDelta);
+    updateGameSpeed(frameTimeDelta);
+  }
+
+  if (!gameOver && cactiController.collideWith(player)) {
+    gameOver = true;
+    setupGameReset();
+    score.setHighScore();
+  }
+
+
+  ground.draw();
+  cactiController.draw();
+  player.draw();
+  score.draw();
+
+  if (gameOver) {
+    showGameOver();
+  }
+
+  if (waitingToStart) {
+    showStartGameText();
+  }
+
+  requestAnimationFrame(gameLoop);
+}
+
+requestAnimationFrame(gameLoop);
+
+window.addEventListener("keyup", reset, { once: true });
+window.addEventListener("touchstart", reset, { once: true });
